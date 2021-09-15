@@ -37,3 +37,21 @@ spec:
 #   destination:
 #     server: "https://kubernetes.default.svc"
 #     namespace: "hello-world"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: raw-k8s
+spec:
+  destination:
+    name: ''
+    namespace: hello-world
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: raw-k8s/
+    repoURL: 'https://github.com/dharapvj/flux-trial'
+    targetRevision: HEAD
+    plugin:
+      name: sopsDecrypt
+  project: default
+  syncPolicy:
+    automated: null
