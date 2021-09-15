@@ -1,0 +1,39 @@
+---
+apiVersion: "v1"
+kind: "Namespace"
+metadata:
+  name: "hello-world"
+
+---
+apiVersion: "argoproj.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "argo-demo-helm"
+spec:
+  project: "default"
+  source:
+    repoURL: "https://github.com/dharapvj/flux-trial"
+    targetRevision: "HEAD"
+    path: "helm-chart"
+    helm:
+      valueFiles:
+        - "values.yaml"
+        - "secrets.yaml"
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: "hello-world"
+
+# ---
+# apiVersion: "argoproj.io/v1alpha1"
+# kind: "Application"
+# metadata:
+#   name: "argo-demo-k8s-manifest"
+# spec:
+#   project: "default"
+#   source:
+#     repoURL: "https://github.com/dharapvj/flux-trial"
+#     targetRevision: "HEAD"
+#     path: "raw-k8s"
+#   destination:
+#     server: "https://kubernetes.default.svc"
+#     namespace: "hello-world"
