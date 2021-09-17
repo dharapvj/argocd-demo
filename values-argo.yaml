@@ -1,0 +1,58 @@
+repoServer:
+# Use init containers to configure custom tooling
+# https://argoproj.github.io/argo-cd/operator-manual/custom_tools/
+# When using the volumes & volumeMounts section bellow, please comment out those above.
+  env:
+  - name: SOPS_AGE_KEY_FILE
+    value: "/sops/keys.txt"
+  volumes:
+  - name: custom-tools
+    emptyDir: {}
+  - name: age-key
+    secret:
+      secretName: age-key
+  initContainers:
+  - name: download-tools
+    image: debian:stable-slim
+    command: [sh, -c]
+    args:
+    - >
+      apt-get update && apt-get install -y wget &&
+      which wget && wget https://github.com/mozilla/sops/releases/download/v3.7.1/sops_3.7.1_amd64.deb &&
+      dpkg-deb -xv *.deb . && mv /usr/local/bin/sops /custom-tools &&
+      wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz &&
+      tar -xvzf helm-v3.6.3-linux-amd64.tar.gz &&
+      mv linux-amd64/helm /custom-tools/_helm &&
+      wget https://github.com/teejaded/helm-sops/releases/download/20210610-1/helm-sops_20210610-1_linux_amd64.tar.gz &&
+      tar -xvzf helm-sops_20210610-1_linux_amd64.tar.gz &&
+      mv helm-sops /custom-tools/helm
+    volumeMounts:
+      - mountPath: /custom-tools
+        name: custom-tools
+  volumeMounts:
+  - mountPath: /usr/local/bin/sops
+    name: custom-tools
+    subPath: sops
+  - mountPath: /usr/local/bin/age
+    name: custom-tools
+    subPath: age
+  - mountPath: /usr/local/bin/helm
+    name: custom-tools
+    subPath: helm
+  - mountPath: /usr/local/bin/_helm
+    name: custom-tools
+    subPath: _helm
+  - mountPath: "/sops"
+    name: age-key
+server:
+  # Configmap argocd-cm
+  config:
+    configManagementPlugins: |
+      - name: sopsDecrypt
+        generate:
+          command: ["/bin/sh", "-c"]
+          args: ["cat <(sops -d enc/*.yaml) <(cat *.yaml)"]
+  ingress:
+    enabled: true
+    hosts:
+    - argo.example.com
