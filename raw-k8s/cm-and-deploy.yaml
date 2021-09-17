@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bgcolor-msg-config
+  namespace: hello-world
+data:
+  msg-config: This text is provided from configmap
+  color-config: "#ab88d3"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: message-app1
+  namespace: hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: msg-label1
+  template:
+    metadata:
+      labels:
+        app: msg-label1
+    spec:
+      containers: 
+      - name: node-bgcolor
+        image: dharapvj/bgcolor-text-demo:1.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MESSAGE
+          valueFrom:
+            configMapKeyRef:
+              name: bgcolor-msg-config
+              key: msg-config
+        - name: BGCOLOR
+          valueFrom:
+            configMapKeyRef:
+              name: bgcolor-msg-config
+              key: color-config
