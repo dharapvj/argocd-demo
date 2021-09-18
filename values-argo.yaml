@@ -50,7 +50,7 @@ server:
     configManagementPlugins: |
       - name: sopsDecrypt
         generate:
-          command: ["/bin/sh", "-c"]
+          command: ["/usr/bin/bash", "-c"]
           args: ["cat <(sops -d enc/*.yaml) <(cat *.yaml)"]
   ingress:
     enabled: true
