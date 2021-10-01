@@ -74,7 +74,7 @@ helm upgrade --install argocd -f values-argo.yaml --version 3.17.6 --namespace a
 
 ## Application Deployment via ArgoCD
 
-Now that ArgoCD is deployed along with secret decryption capabilities, its time to deploy sample apps. Two sample apps here are available in https://github.com/dharapvj/flux-trial. helm-chart based app in helm-chart directory. A raw k8s manifest app in raw-k8s directory. Both the apps showcase encrypted content. Content has been encrypted using same application encryption key which was provided to ArgoCD via age-key secret.
+Now that ArgoCD is deployed along with secret decryption capabilities, its time to deploy sample apps. Two sample apps here are available in this repo itself. a) helm-chart based app in `helm-chart` directory. A raw k8s manifest app in `raw-k8s` directory. Both the apps showcase encrypted content. Content has been encrypted using same application encryption key which was provided to ArgoCD via age-key secret.
 
 ### Deployment of helm-app using secret
 To deploy helm-app as well as raw-k8s app, you can use included manifest file which uses ArgoCD CR called `Application`
