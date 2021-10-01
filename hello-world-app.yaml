@@ -12,7 +12,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/dharapvj/flux-trial
+    repoURL: https://github.com/dharapvj/argocd-demo
     targetRevision: HEAD
     path: helm-chart
     helm:
@@ -33,7 +33,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: raw-k8s/
-    repoURL: 'https://github.com/dharapvj/flux-trial'
+    repoURL: 'https://github.com/dharapvj/argocd-demo'
     targetRevision: HEAD
     plugin:
       name: sopsDecrypt
